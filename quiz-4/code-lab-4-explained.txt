@@ -1,0 +1,74 @@
+Write in a small summary (a couple of lines) 
+i) how all codes are executed,
+ii) an example usage and its output and 
+iii) a brief explanation of the actual C code.
+----------------------------------------------
+./immun2ctrlC 5 
+Runs the process with sleep time 5 seconds and in the meantime pressing Ctrl+C 
+gets captured/handled and then ignored by this signal(SIGINT, SIG_IGN);
+Not much to show in terms of actual output since it's just a printout of sleeping for: 5 sec.
+----------------------------------------------------------------------------------------------------------
+./example_kill 45
+The kill function is called once every ten numbers. For example, here it gets executed one more time
+at the following instances 1,11,21,31,41 for a total of 5 times.
+Output:{
+Back in main
+The kill() function was called 5 times
+The signal catching function was called 5 times
+}
+This is because the count variable needs to be bigger than 0, 10, 20,... for i to get these values and
+thus meet the criteria (i/10)*10 which is only true when i is at a power of 10. Finally the catcher's job is 
+to count how many times SIGUSR1 has invoked the catcher function which equals the count kill() has been used. 
+----------------------------------------------------------------------------------------------------------
+./example_pause 20
+This program pauses the program for as many seconds as the first argument.
+Output{
+The time before pause is Sun Dec 10 22:21:54 2023
+
+Signal catcher called for signal 14
+The time after pause is Sun Dec 10 22:22:14 2023
+}
+Alarm(t); triggers a signal after t seconds. The pause() function waits for this signal to arrive and 
+then resumes the execution of the code. Before and after pause() the time of the system gets printed.
+----------------------------------------------------------------------------------------------------------
+./example_sleep
+This program prints the following message until a signal gets produced (for example ctr+c). 
+Output{
+Going to sleep for a second...
+Going to sleep for a second...
+Going to sleep for a second...
+^CCaught signal 2, coming out...
+}
+Then the handler takes over and prints that it caught a signal.After that, it exits the program.
+----------------------------------------------------------------------------------------------------------
+./pipe_1 3
+This program creates as many childred as the first argument.
+Output{
+Creating 3 children
+FATHER: I receiνed from children:
+
+Ηello from child  1 (pid= 8887)
+Ηello from child  2 (pid= 8888)
+Ηello from child  3 (pid= 8889)
+}
+Each child writes a message to the pipe indicating their number and process ID. The parent then reads 
+from the end of the pipe and the receiνed messages which ultimately get printed to the console.
+----------------------------------------------------------------------------------------------------------
+./pipe_2
+Output{
+message through pipe
+}
+This program is used to demonstrate how a parent process can write something into the pipe and 
+have the child process read from it and print the received message to the console.
+----------------------------------------------------------------------------------------------------------
+./signal -2 sleep 3
+This program executes the command that is in place of argv[2].
+Output{
+Executing: sleep
+Alarm resived: 14
+Child process killed
+}
+If the command takes more time that 
+the time specified at argv[1] then the child process created to execute the command gets killed. For
+example here the command sleep 3 took longer than 2 seconds so the program had to be terminated. When 
+the program kills the command it also prints the number assigned to the signal that caused the termination.
